@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"build_systems":
+	[
+		{
+			"name": "Re-Indent with astyle",
+			"shell_cmd": "astyle --style=allman -s2 -S -xw -Q -n \"$file\""
+		},
+		{
+			"name": "Re-Indent + Build",
+			"shell_cmd": "astyle --style=allman -s2 -S -xw -Q -n \"$file\" && gcc -m32 \"cu_ui.c\" \"$file\" -o \"$file_path/$file_base_name\" -L/usr/include -lm"
+		},
+		{
+			"name": "Re-Indent + Build + Exec",
+			"shell_cmd": "astyle --style=allman -s2 -S -xw -Q -n \"$file\" && gcc -m32 \"cu_ui.c\" \"$file\" -o \"$file_path/$file_base_name\" -L/usr/include -lm && \"$file_path/$file_base_name\""
+		}
+	]
+}
