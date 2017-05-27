@@ -2,12 +2,22 @@
  * @file C-Utils User Interface
  *
  * @author     CieNTi
+ * @version    0.2.0
  */
 
 #ifndef H_CU_UI
 #define H_CU_UI
 
 #include "cu_commons.h"
+
+/* ----------------------------------------
+ * Macros
+ */
+/** Character used as header id, it should not be any typeable character */
+#if !defined(M_H)
+#define M_H (char)0xFF
+#endif
+
 
 /* ----------------------------------------
  * Types, Structs and Enums
@@ -43,4 +53,10 @@ int display_menu(const struct menu_item_st *menu,
                  menu_action **cb,
                  bool wait_only);
 
+/**
+ * @brief      Dummy function to use with a menu header (and never called)
+ *
+ * @return     0 ok, always
+ */
+int m_entry_header(void);
 #endif /* H_CU_UI */

@@ -2,6 +2,7 @@
  * @file Some tools to ease recurrent tasks
  *
  * @author     CieNTi
+ * @version    0.2.0
  */
 
 #include <stdio.h>
@@ -13,12 +14,18 @@
  * --------------------- Read cu_ui.h for documentation -------------------
  * ------------------------------------------------------------------------ */
 
+int m_entry_header(void)
+{
+  return 0;
+}
+
 int display_menu(const struct menu_item_st *menu,
                  menu_action **cb,
                  bool wait_only)
 {
   static char menu_choice;
   static bool menu_disabled;
+  static bool header_sent;
   static int res;
   static int i;
 
@@ -32,10 +39,31 @@ int display_menu(const struct menu_item_st *menu,
   {
     /* Wait for user interaction only or print menu too? */
     i = 0;
+    header_sent = false;
     do
     {
       if ((!wait_only) && (!menu_disabled))
       {
+        /* Heading element */
+        if (menu[i].key == M_H && menu[i].cb == m_entry_header)
+        {
+          /* Head text */
+          if (!header_sent)
+          {
+            PRINTF("\n\n#*");
+          }
+
+          PRINTF("\n#  %s\n", menu[i].text);
+
+          if (!header_sent)
+          {
+            PRINTF("#*\n\n");
+          }
+
+          header_sent = true;
+          continue;
+        }
+
         /* Last element, used to exit, is put away from user menu entries */
         if (menu[i].cb == NULL)
         {
@@ -86,7 +114,7 @@ int display_menu(const struct menu_item_st *menu,
       /* Wrong key? */
       if ((i > 1) && (menu[i - 1].cb == NULL))
       {
-        PRINTF("\nxx Key %c unknown, please try again\n\n", menu_choice);
+        PRINTF("\nxx Key %c unknown, please try again\n\n\n\n", menu_choice);
       }
       else
       {

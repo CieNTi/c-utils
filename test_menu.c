@@ -69,19 +69,21 @@ int show_main_menu()
   /* Options */
   __root static const struct menu_item_st menu[] =
   {
-    { '1', "User entry nr.1", m_entry_nr1 },
-    { '2', "User entry nr.2", m_entry_nr2 },
-    { '3', "User entry nr.3", m_entry_nr3 },
-    { '4', "User entry nr.4", m_entry_nr4 },
-    { '5', "User entry nr.5", m_entry_nr5 },
-    { 'x', "Exit",            NULL        }
+    { M_H, "First, more decorated header",    m_entry_header },
+    { M_H, "Not the first header, less deco", m_entry_header },
+    { '1', "User entry nr.1",                 m_entry_nr1    },
+    { '2', "User entry nr.2",                 m_entry_nr2    },
+    { '3', "User entry nr.3",                 m_entry_nr3    },
+    { '4', "User entry nr.4",                 m_entry_nr4    },
+    { '5', "User entry nr.5",                 m_entry_nr5    },
+    { M_H, "Not the first header, less deco", m_entry_header },
+    { '6', "User entry nr.1",                 m_entry_nr1    },
+    { '7', "User entry nr.2",                 m_entry_nr2    },
+    { '8', "User entry nr.3",                 m_entry_nr3    },
+    { '9', "User entry nr.4",                 m_entry_nr4    },
+    { '0', "User entry nr.5",                 m_entry_nr5    },
+    { 'x', "Exit",                            NULL           }
   };
-
-  /* Head text */
-  PRINTF("\n\n\n"
-         "##* ---------------------\n");
-  PRINTF("#   User menu example   #\n");
-  PRINTF("--------------------- *##\n\n");
 
   /* Show menu and wait for user interaction */
   res = display_menu(menu, &cb, false);
@@ -97,7 +99,7 @@ int show_main_menu()
 }
 
 
-/*
+/* --------------------------------------
  * main loop: Ask for an action and exits
  */
 /***/
