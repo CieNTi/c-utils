@@ -62,9 +62,9 @@ int show_main_menu()
   static int res = 1;
   res = 1;
 
-  /* Action to be called after menu wait */
-  static menu_action *cb;
-  cb = NULL;
+  /* Selected option holder */
+  static int sel_item = 0;
+  sel_item = 0;
 
   /* Options */
   __root static const struct menu_item_st menu[] =
@@ -86,12 +86,12 @@ int show_main_menu()
   };
 
   /* Show menu and wait for user interaction */
-  res = display_menu(menu, &cb, false);
+  res = display_menu(menu, &sel_item, false);
 
   /* Call action if all went fine */
-  if ((!res) && (cb != NULL))
+  if ((!res) && (menu[sel_item].cb != NULL))
   {
-    res = cb();
+    res = menu[sel_item].cb();
   }
 
   /* 0 ok, otherwise fails */

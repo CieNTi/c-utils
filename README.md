@@ -8,11 +8,11 @@ Some C utilities to ease my daily coding
 
 ## Menu with user interaction
 
-Invoking `display_menu(menu, cb, wait_only)` will display(or not) an option menu and will wait the user to type a choice, exiting only when exit key is pressed.
+Invoking `display_menu(menu, &sel_item, wait_only)` will display(or not) an option menu and will wait the user to type a choice, exiting only when exit key is pressed.
 
-There is a single mandatory entry, the exit one. It have to be the last in the array and have to have a NULL callback.
+There is a single **mandatory entry**, the exit one. It **have to be the last** in the array and **have to have a NULL callback**.
 
-To include a header, it have to use `M_H` as its key and `m_entry_header` as its callback.
+To include a header entry, it have to use `M_H` as its key and `m_entry_header` as its callback (both declared inside `cu_ui.h`.
 
 A menu example array looks like:
 
@@ -65,6 +65,13 @@ The resulting console output looks like:
 
 
 ## Changelog
+
+### [1.0.0] - 2017-05-28
+
+### Changed
+
+- `display_menu()` now updates the selected index instead a callback as argument. User can now choose freedomly what to do within a full perspective (switch..case the key, check..call the callback, ...)
+
 
 ### [0.2.0] - 2017-05-28
 

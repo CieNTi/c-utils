@@ -2,7 +2,7 @@
  * @file C-Utils User Interface
  *
  * @author     CieNTi
- * @version    0.2.0
+ * @version    1.0.0
  */
 
 #ifndef H_CU_UI
@@ -50,7 +50,7 @@ struct menu_item_st
  * @return     0 ok, otherwise fail
  */
 int display_menu(const struct menu_item_st *menu,
-                 menu_action **cb,
+                 int *sel_item,
                  bool wait_only);
 
 /**

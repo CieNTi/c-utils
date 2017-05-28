@@ -2,7 +2,7 @@
  * @file Some tools to ease recurrent tasks
  *
  * @author     CieNTi
- * @version    0.2.0
+ * @version    1.0.0
  */
 
 #include <stdio.h>
@@ -20,7 +20,7 @@ int m_entry_header(void)
 }
 
 int display_menu(const struct menu_item_st *menu,
-                 menu_action **cb,
+                 int *sel_item,
                  bool wait_only)
 {
   static char menu_choice;
@@ -76,6 +76,10 @@ int display_menu(const struct menu_item_st *menu,
     }
     while (menu[i++].cb != NULL);
 
+    /* Default selected item is the last, exit one, so the callback still can
+     * be checked against NULL */
+    *sel_item = i - 1;
+
     /* Tell the user to interact xD */
     if (!menu_disabled)
     {
@@ -104,7 +108,7 @@ int display_menu(const struct menu_item_st *menu,
         if (menu[i].key == menu_choice)
         {
           /* Exit search loop after action is triggered */
-          *cb = menu[i].cb;
+          *sel_item = i;
           res = 0;
           break;
         }
@@ -129,12 +133,6 @@ int display_menu(const struct menu_item_st *menu,
 
     /* TODO/IMPROVEMENT: OS wait to avoid high CPU use */
     // OS_wait_function();
-  }
-
-  /* Avoid action assignation in a fail situation */
-  if (res)
-  {
-    *cb = NULL;
   }
 
   /* 0 ok, otherwise fails */
