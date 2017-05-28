@@ -66,6 +66,13 @@ The resulting console output looks like:
 
 ## Changelog
 
+### [1.1.0] - 2017-05-29
+
+### Added
+
+- Hierarchical menus without deep call made easy with `start_hmenu(menu_action *)` and `display_hmenu(menu_item_st *)`.
+
+
 ### [1.0.0] - 2017-05-28
 
 ### Changed

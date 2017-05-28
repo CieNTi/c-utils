@@ -53,7 +53,7 @@ int m_entry_nr5(void)
 
 
 /* -------------------------
- * Menu creation and handler
+ * Menu creation and control
  */
 /***/
 int show_main_menu()
@@ -102,6 +102,9 @@ int show_main_menu()
 /* --------------------------------------
  * main loop: Ask for an action and exits
  */
+
+int ui_menu_main(void);
+
 /***/
 int main()
 {
@@ -116,7 +119,123 @@ int main()
     res = show_main_menu();
   }
 
+  /* Hierarchical menu creation and control example */
+  res = start_hmenu(ui_menu_main);
+
   PRINTF("Exiting now ...\n\n");
+
+  return res;
+}
+
+/* ---------------------- Hierarchical menu members ---------------------- */
+
+/*
+ * --------------------------
+ * *** Menus and submenus ***
+ * --------------------------
+ */
+
+int ui_submenu_nr1(void);
+int ui_submenu_nr2(void);
+
+/***/
+int ui_menu_main(void)
+{
+  /* Options */
+  __root static const struct menu_item_st menu[] =
+  {
+    { M_H, "Hierarchical menu",       m_entry_header },
+
+    { '1', "Go to submenu #1",        ui_submenu_nr1 },
+    { '2', "Go to submenu #2",        ui_submenu_nr2 },
+
+    { 'x', "Exit",                    NULL           }
+  };
+
+  /* 0 ok, otherwise fail */
+  return display_hmenu(menu);
+}
+
+int hm_entry_nr3(void);
+int hm_entry_nr4(void);
+int hm_entry_nr5(void);
+
+/***/
+int ui_submenu_nr1(void)
+{
+  /* Options */
+  __root static const struct menu_item_st menu[] =
+  {
+    { M_H, "Submenu #1",              m_entry_header },
+
+    { '1', "Call to end-point nr.3",  hm_entry_nr3   },
+    { '2', "Call to end-point nr.4",  hm_entry_nr4   },
+    { '3', "Call to end-point nr.5",  hm_entry_nr5   },
+    { '4', "Call to end-point nr.3",  hm_entry_nr3   },
+    { '5', "Call to end-point nr.4",  hm_entry_nr4   },
+    { '6', "Call to end-point nr.5",  hm_entry_nr5   },
+
+    { 'x', "Exit",                    NULL           }
+  };
+
+  /* 0 ok, otherwise fail */
+  return display_hmenu(menu);
+}
+
+/***/
+int ui_submenu_nr2(void)
+{
+  /* Options */
+  __root static const struct menu_item_st menu[] =
+  {
+    { M_H, "Submenu #2",              m_entry_header },
+
+    { '1', "Call to end-point nr.3",  hm_entry_nr3   },
+    { '2', "Call to end-point nr.4",  hm_entry_nr4   },
+    { '3', "Call to end-point nr.5",  hm_entry_nr5   },
+    { '4', "Call to end-point nr.3",  hm_entry_nr3   },
+    { '5', "Call to end-point nr.4",  hm_entry_nr4   },
+    { '6', "Call to end-point nr.5",  hm_entry_nr5   },
+    { '7', "Call to end-point nr.3",  hm_entry_nr3   },
+
+    { 'x', "Exit",                    NULL           }
+  };
+
+  /* 0 ok, otherwise fail */
+  return display_hmenu(menu);
+}
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * ------------------------------------------------------
+ * *** End-points: The real action happens here, baby ***
+ * ------------------------------------------------------
+ */
+
+/***/
+int hm_entry_nr3(void)
+{
+  int res = 0;
+  PRINTF("\n>> Called m_entry_nr3\n");
+
+  return res;
+}
+
+/***/
+int hm_entry_nr4(void)
+{
+  int res = 0;
+  PRINTF("\n>> Called m_entry_nr4\n");
+
+  return res;
+}
+
+/***/
+int hm_entry_nr5(void)
+{
+  int res = 0;
+  PRINTF("\n>> Called m_entry_nr5\n");
 
   return res;
 }

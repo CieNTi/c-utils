@@ -2,7 +2,7 @@
  * @file Some tools to ease recurrent tasks
  *
  * @author     CieNTi
- * @version    1.0.0
+ * @version    1.1.0
  */
 
 #include <stdio.h>
@@ -10,29 +10,41 @@
 
 #include "cu_ui.h"
 
+/* ----------------------------------------
+ * Module variables
+ */
+/**
+ * Entries calls hierarchy index
+ */
+static int menu_idx = 0;
+
+/**
+ * Entries calls hierarchy array
+ */
+static menu_action *menu_lst[MAX_MENU_LST];
+
 /* ------------------------------------------------------------------------
  * --------------------- Read cu_ui.h for documentation -------------------
  * ------------------------------------------------------------------------ */
 
+/**/
 int m_entry_header(void)
 {
   return 0;
 }
 
+/**/
 int display_menu(const struct menu_item_st *menu,
                  int *sel_item,
                  bool wait_only)
 {
-  static char menu_choice;
-  static bool menu_disabled;
-  static bool header_sent;
-  static int res;
-  static int i;
+  char menu_choice = 0;
+  bool menu_disabled = false;
+  bool header_sent;
+  int i;
 
   /* Function fails by default */
-  res = 1;
-  menu_disabled = false;
-  menu_choice = 0;
+  int res = 1;
 
   /* Wait the choice */
   while (1)
@@ -136,5 +148,98 @@ int display_menu(const struct menu_item_st *menu,
   }
 
   /* 0 ok, otherwise fails */
+  return res;
+}
+
+/**/
+int start_hmenu(menu_action *first_parent)
+{
+  /* Always failing function by default */
+  int res = 1;
+
+  /* Reset list */
+  for (menu_idx = MAX_MENU_LST; menu_idx > 0; menu_idx--)
+  {
+    menu_lst[menu_idx - 1] = NULL;
+  }
+
+  /* First element */
+  menu_lst[menu_idx++] = first_parent;
+
+  /*
+   * Starting menu parsing:
+   * ---------------------
+   * Every menu_lst call will update menu_lst[menu_idx] before exit. If no more
+   * action is required (exit or endpoint entry) a NULL is used.
+   * Index check and update is done here, and NULL is used as end-of-list.
+   */
+  res = 0;
+  while ((menu_idx > 0) &&                     // Enough low side index?
+         (menu_idx <= MAX_MENU_LST) &&         // Enough high side index ?
+         (menu_lst[menu_idx - 1] != NULL) &&   // Is a function ?
+         (!(res = menu_lst[menu_idx - 1]())))  // Call the function! No error ?
+  {
+    /* Ok, safe zone, let's check what to do */
+    if (menu_lst[menu_idx] == NULL)
+    {
+      /* Go back if possible */
+      if (menu_idx > 0)
+      {
+        menu_idx--;
+      }
+    }
+    else
+    {
+      /* New member! */
+      if (++menu_idx == MAX_MENU_LST)
+      {
+        PRINTF("\nxx Max depth reached, please increase MAX_MENU_LST\n");
+        PRINTF("xx Entering an infinite loop here now ...\n");
+        while (1)
+        {
+          /* Dear programmer:
+           * -- Update MAX_MENU_LST and try again! --
+           * Thanks
+           */
+        }
+      }
+
+      /* Ensures a brand new callback */
+      menu_lst[menu_idx] = NULL;
+    }
+  }
+
+  /* Errors? */
+  if (res)
+  {
+    PRINTF("\nxx Exiting with errors:\n");
+    PRINTF("xx menu_idx: %i, menu_lst[menu_idx]: %08X\n",
+           menu_idx,
+           menu_lst[menu_idx]);
+  }
+
+  /* 0 ok, otherwise fails */
+  return res;
+}
+
+/**/
+int display_hmenu(const struct menu_item_st *menu)
+{
+  /* Always failing function by default */
+  int res = 1;
+
+  /* Selected option holder */
+  int sel_item = 0;
+
+  /* Show menu and wait for user interaction */
+  res = display_menu(menu, &sel_item, false);
+
+  /* Call action if all went fine */
+  if (!res)
+  {
+    menu_lst[menu_idx] = menu[sel_item].cb;
+  }
+
+  /* 0 ok, otherwise fail */
   return res;
 }

@@ -2,7 +2,7 @@
  * @file C-Utils User Interface
  *
  * @author     CieNTi
- * @version    1.0.0
+ * @version    1.1.0
  */
 
 #ifndef H_CU_UI
@@ -18,6 +18,10 @@
 #define M_H (char)0xFF
 #endif
 
+/** Max hierarchical menu depth level */
+#if !defined(MAX_MENU_LST)
+#define MAX_MENU_LST 8
+#endif
 
 /* ----------------------------------------
  * Types, Structs and Enums
@@ -41,6 +45,13 @@ struct menu_item_st
  * File functions
  */
 /**
+ * @brief      Dummy function to use with a menu header (and never called)
+ *
+ * @return     0 ok, always
+ */
+int m_entry_header(void);
+
+/**
  * @brief      Display (or not) a menu, and wait for user interaction
  *
  * @param[in]  menu       The menu array
@@ -54,9 +65,23 @@ int display_menu(const struct menu_item_st *menu,
                  bool wait_only);
 
 /**
- * @brief      Dummy function to use with a menu header (and never called)
+ * @brief      Controls hierarchical menu without deep calling
  *
- * @return     0 ok, always
+ *             The final actions will be called inside the menu action,
+ *             therefore at least `stack + 1` is used there
+ *
+ * @return     0 ok, otherwise fail
  */
-int m_entry_header(void);
+int start_hmenu(menu_action *first_parent);
+
+/**
+ * @brief      Display + update helper to ease (sub)menu maintenance
+ *
+ *             Ensures every member do the right job
+ *
+ * @param[in]  menu  pointer to first element of menu items array
+ *
+ * @return     0 ok, otherwise fail
+ */
+int display_hmenu(const struct menu_item_st *menu);
 #endif /* H_CU_UI */
