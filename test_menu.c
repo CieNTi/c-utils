@@ -16,6 +16,9 @@ int m_entry_nr1(void)
 {
   int res = 1;
   PRINTF("\n>> Called m_entry_nr1\n");
+
+  /* Good boy */
+  res = 0;
   return res;
 }
 
@@ -24,6 +27,9 @@ int m_entry_nr2(void)
 {
   int res = 1;
   PRINTF("\n>> Called m_entry_nr2\n");
+
+  /* Good boy */
+  res = 0;
   return res;
 }
 
@@ -32,6 +38,9 @@ int m_entry_nr3(void)
 {
   int res = 1;
   PRINTF("\n>> Called m_entry_nr3\n");
+
+  /* Good boy */
+  res = 0;
   return res;
 }
 
@@ -40,6 +49,9 @@ int m_entry_nr4(void)
 {
   int res = 1;
   PRINTF("\n>> Called m_entry_nr4\n");
+
+  /* Good boy */
+  res = 0;
   return res;
 }
 
@@ -48,6 +60,9 @@ int m_entry_nr5(void)
 {
   int res = 1;
   PRINTF("\n>> Called m_entry_nr5\n");
+
+  /* Good boy */
+  res = 0;
   return res;
 }
 
@@ -156,10 +171,6 @@ int ui_menu_main(void)
   return display_hmenu(menu);
 }
 
-int hm_entry_nr3(void);
-int hm_entry_nr4(void);
-int hm_entry_nr5(void);
-
 /***/
 int ui_submenu_nr1(void)
 {
@@ -168,12 +179,10 @@ int ui_submenu_nr1(void)
   {
     { M_H, "Submenu #1",              m_entry_header },
 
-    { '1', "Call to end-point nr.3",  hm_entry_nr3   },
-    { '2', "Call to end-point nr.4",  hm_entry_nr4   },
-    { '3', "Call to end-point nr.5",  hm_entry_nr5   },
-    { '4', "Call to end-point nr.3",  hm_entry_nr3   },
-    { '5', "Call to end-point nr.4",  hm_entry_nr4   },
-    { '6', "Call to end-point nr.5",  hm_entry_nr5   },
+    { '1', "Call to end-point nr.1",  m_entry_nr1    },
+    { '2', "Call to end-point nr.2",  m_entry_nr2    },
+    { '3', "Call to end-point nr.3",  m_entry_nr3    },
+    { '4', "Call to end-point nr.4",  m_entry_nr4    },
 
     { 'x', "Exit",                    NULL           }
   };
@@ -190,52 +199,15 @@ int ui_submenu_nr2(void)
   {
     { M_H, "Submenu #2",              m_entry_header },
 
-    { '1', "Call to end-point nr.3",  hm_entry_nr3   },
-    { '2', "Call to end-point nr.4",  hm_entry_nr4   },
-    { '3', "Call to end-point nr.5",  hm_entry_nr5   },
-    { '4', "Call to end-point nr.3",  hm_entry_nr3   },
-    { '5', "Call to end-point nr.4",  hm_entry_nr4   },
-    { '6', "Call to end-point nr.5",  hm_entry_nr5   },
-    { '7', "Call to end-point nr.3",  hm_entry_nr3   },
+    { '1', "Call to end-point nr.1",  m_entry_nr1    },
+    { '2', "Call to end-point nr.2",  m_entry_nr2    },
+    { '3', "Call to end-point nr.3",  m_entry_nr3    },
+    { '4', "Call to end-point nr.4",  m_entry_nr4    },
+    { '5', "Call to end-point nr.5",  m_entry_nr5    },
 
     { 'x', "Exit",                    NULL           }
   };
 
   /* 0 ok, otherwise fail */
   return display_hmenu(menu);
-}
-
-/* ------------------------------------------------------------------------- */
-
-/*
- * ------------------------------------------------------
- * *** End-points: The real action happens here, baby ***
- * ------------------------------------------------------
- */
-
-/***/
-int hm_entry_nr3(void)
-{
-  int res = 0;
-  PRINTF("\n>> Called m_entry_nr3\n");
-
-  return res;
-}
-
-/***/
-int hm_entry_nr4(void)
-{
-  int res = 0;
-  PRINTF("\n>> Called m_entry_nr4\n");
-
-  return res;
-}
-
-/***/
-int hm_entry_nr5(void)
-{
-  int res = 0;
-  PRINTF("\n>> Called m_entry_nr5\n");
-
-  return res;
 }
