@@ -2,13 +2,15 @@
  * @file C-Utils User Interface
  *
  * @author     CieNTi
- * @version    1.1.0
+ * @version    1.2.1
  */
 
 #ifndef H_CU_UI
 #define H_CU_UI
 
 #include "cu_commons.h"
+
+#include <stdbool.h>
 
 /* ----------------------------------------
  * Macros
@@ -19,8 +21,13 @@
 #endif
 
 /** Max hierarchical menu depth level */
-#if !defined(MAX_MENU_LST)
-#define MAX_MENU_LST 8
+#if !defined(MAX_HMENU_LST)
+#define MAX_HMENU_LST 8
+#endif
+
+/** Function to use as fgets() */
+#if !defined(FGETS)
+#define FGETS(x,y) fgets(x,y,stdin)
 #endif
 
 /* ----------------------------------------
@@ -36,8 +43,8 @@ typedef int (menu_action)(void);
  */
 struct menu_item_st
 {
-  char key;   	   /**< Key requested to trigger the menu action */
-  char *text; 	   /**< Text displayed to user */
+  char key;        /**< Key requested to trigger the menu action */
+  char *text;      /**< Text displayed to user */
   menu_action *cb; /**< Action triggered when the user hit the required key */
 };
 
@@ -70,6 +77,8 @@ int display_menu(const struct menu_item_st *menu,
  *             The final actions will be called inside the menu action,
  *             therefore at least `stack + 1` is used there
  *
+ * @param[in]  First menu to be shown, exiting this one exits the menu loop
+ *
  * @return     0 ok, otherwise fail
  */
 int start_hmenu(menu_action *first_parent);
@@ -84,4 +93,25 @@ int start_hmenu(menu_action *first_parent);
  * @return     0 ok, otherwise fail
  */
 int display_hmenu(const struct menu_item_st *menu);
+
+/**
+ * @brief      Simulates standard library `fgets(str, num, stdin)` but
+ *             allowing a non-blocking uart getchar-like interface.
+ *
+ *             The main difference resides in the way the EOF (0x00) is
+ *             parsed, a continuous non-blocking environment (polling with no
+ *             IRQ/ISR) returns 0x00 when no character is received. It can be
+ *             useful in an embedded C code without FILE streams support.
+ *             **Useless if using real fgetc()/fgets() functions are
+ *             available**
+ *
+ * @param      str   Pointer to an array of chars where the string read is
+ *                   copied.
+ * @param[in]  num   Maximum number of characters to be copied into str
+ *                   (including the terminating null-character).
+ *
+ * @return     This function returns str on success, and NULL on error
+ */
+char *uart_fgets(char *str, int num);
+
 #endif /* H_CU_UI */

@@ -4,9 +4,10 @@
  * @author     CieNTi
  */
 
+#include "cu_ui.h"
+
 #include <stdio.h>
 #include <stdbool.h>
-#include "cu_ui.h"
 
 /* ------------
  * Menu actions
@@ -114,34 +115,6 @@ int show_main_menu()
 }
 
 
-/* --------------------------------------
- * main loop: Ask for an action and exits
- */
-
-int ui_menu_main(void);
-
-/***/
-int main()
-{
-  /* Always fail by default */
-  static int res = 1;
-  res = 1;
-
-  while (res)
-  {
-    PRINTF(">> Sleeping for 1s\n");
-    usleep(1000000);
-    res = show_main_menu();
-  }
-
-  /* Hierarchical menu creation and control example */
-  res = start_hmenu(ui_menu_main);
-
-  PRINTF("Exiting now ...\n\n");
-
-  return res;
-}
-
 /* ---------------------- Hierarchical menu members ---------------------- */
 
 /*
@@ -211,3 +184,46 @@ int ui_submenu_nr2(void)
   /* 0 ok, otherwise fail */
   return display_hmenu(menu);
 }
+
+
+/* ------------------------------ main loop ------------------------------ */
+int main()
+{
+  /* Always fail by default */
+  static int res = 1;
+  res = 1;
+
+  char my_str[15];
+
+  /* Test for comparing fgets() with uart_fgets() */
+  PRINTF("Expecting string here: ");
+  if (FGETS(my_str, 15) == my_str)
+  {
+    /* Received */
+    PRINTF("String received: %s\n", my_str);
+  }
+
+  /* Getting a float */
+  float my_float = 0;
+  PRINTF("sscanf() exits with 0x%X\n",
+         sscanf(my_str, "%f", &my_float));
+
+  PRINTF("my_float is %f\n", my_float);
+
+  /* Uncomment for infinite loop */
+  //res = 0;
+  //while (!res)
+  {
+    PRINTF(">> Sleeping for 1s\n");
+    usleep(1000000);
+    res = show_main_menu();
+  }
+
+  /* Hierarchical menu creation and control example */
+  res = start_hmenu(ui_menu_main);
+
+  PRINTF("\nExiting now ...\n\n");
+
+  return res;
+}
+

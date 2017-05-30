@@ -2,13 +2,13 @@
  * @file Some tools to ease recurrent tasks
  *
  * @author     CieNTi
- * @version    1.1.0
+ * @version    1.2.1
  */
+
+#include "cu_ui.h"
 
 #include <stdio.h>
 #include <stdbool.h>
-
-#include "cu_ui.h"
 
 /* ----------------------------------------
  * Module variables
@@ -21,7 +21,7 @@ static int menu_idx = 0;
 /**
  * Entries calls hierarchy array
  */
-static menu_action *menu_lst[MAX_MENU_LST];
+static menu_action *menu_lst[MAX_HMENU_LST];
 
 /* ------------------------------------------------------------------------
  * --------------------- Read cu_ui.h for documentation -------------------
@@ -30,7 +30,6 @@ static menu_action *menu_lst[MAX_MENU_LST];
 /**/
 int m_entry_header(void)
 {
-  return 0;
 }
 
 /**/
@@ -102,7 +101,7 @@ int display_menu(const struct menu_item_st *menu,
     menu_disabled = false;
 
     /* Use a custom function if no stdin is present */
-    menu_choice = GETACHAR;
+    menu_choice = FGETC;
     if (menu_choice == '\n' || menu_choice == '\r')
     {
       menu_disabled = true;
@@ -158,7 +157,7 @@ int start_hmenu(menu_action *first_parent)
   int res = 1;
 
   /* Reset list */
-  for (menu_idx = MAX_MENU_LST; menu_idx > 0; menu_idx--)
+  for (menu_idx = MAX_HMENU_LST; menu_idx > 0; menu_idx--)
   {
     menu_lst[menu_idx - 1] = NULL;
   }
@@ -175,7 +174,7 @@ int start_hmenu(menu_action *first_parent)
    */
   res = 0;
   while ((menu_idx > 0) &&                     // Enough low side index?
-         (menu_idx <= MAX_MENU_LST) &&         // Enough high side index ?
+         (menu_idx <= MAX_HMENU_LST) &&        // Enough high side index ?
          (menu_lst[menu_idx - 1] != NULL) &&   // Is a function ?
          (!(res = menu_lst[menu_idx - 1]())))  // Call the function! No error ?
   {
@@ -191,14 +190,14 @@ int start_hmenu(menu_action *first_parent)
     else
     {
       /* New member! */
-      if (++menu_idx == MAX_MENU_LST)
+      if (++menu_idx == MAX_HMENU_LST)
       {
-        PRINTF("\nxx Max depth reached, please increase MAX_MENU_LST\n");
+        PRINTF("\nxx Max depth reached, please increase MAX_HMENU_LST\n");
         PRINTF("xx Entering an infinite loop here now ...\n");
         while (1)
         {
           /* Dear programmer:
-           * -- Update MAX_MENU_LST and try again! --
+           * -- Update MAX_HMENU_LST and try again! --
            * Thanks
            */
         }
@@ -242,4 +241,65 @@ int display_hmenu(const struct menu_item_st *menu)
 
   /* 0 ok, otherwise fail */
   return res;
+}
+
+
+/**/
+char *uart_fgets(char *str, int num)
+{
+  int i = 0;
+
+  while ((str[i] = FGETC) != '\n')
+  {
+    /* We don't want carriage return neither, but is not a reason to leave */
+    if (str[i] == '\r')
+    {
+      continue;
+    }
+
+    #if defined(M_FGETS_ECHO_ON)
+    PRINTF("%c", str[i]);
+    #endif
+
+    /* Let's see if user was a good boy */
+    switch (str[i])
+    {
+      /* Backspace key */
+      case '\b':
+        i = (i > 0)?i - 1:0;
+        str[i] = 0x00;
+        break;
+
+      /* Escape key */
+      case 0x1B:
+        /* Exit with EOF equivalent (not exactly an error, just canceled) */
+        return NULL;
+        break;
+
+      default:
+        /* Printable/typeable characters */
+        if ((str[i] > 0x19) &&  // 0x20 = Space ' '
+            (str[i] < 0x7F))    // 0x7E = Tilde '~'
+        {
+          /* As EOF is not an option to end parsing, '\n' is needed. Therefore
+           * string will end in ['\n', 0x00] */
+          if (i < (num - 2))
+          {
+            /* Accept it */
+            i++;
+          }
+        }
+        break;
+    }
+  }
+
+  /* Ensure valid string */
+  str[++i] = 0x00;
+
+  #if defined(M_FGETS_ECHO_ON)
+  PRINTF("%c", str[i - 1]);
+  #endif
+
+  /* All fine */
+  return str;
 }
