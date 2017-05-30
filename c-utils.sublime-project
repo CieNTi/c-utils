@@ -13,11 +13,11 @@
 		},
 		{
 			"name": "Re-Indent + Build",
-			"shell_cmd": "astyle --style=allman -s2 -S -xw -Q -n \"$file\" && gcc -m32 \"cu_ui.c\" \"$file\" -o \"$file_path/$file_base_name\" -L/usr/include -lm"
+			"shell_cmd": "astyle --style=allman -s2 -S -xw -Q -n \"$file\" && gcc -m32 -L/usr/include -lm --include \"cu_config_example.h\" \"cu_mocks.c\" \"cu_ui.c\" \"$file\" -o \"$file_path/$file_base_name\""
 		},
 		{
-			"name": "Re-Indent + Build + Exec",
-			"shell_cmd": "astyle --style=allman -s2 -S -xw -Q -n \"$file\" && gcc -m32 \"cu_ui.c\" \"$file\" -o \"$file_path/$file_base_name\" -L/usr/include -lm && \"$file_path/$file_base_name\""
+			"name": "Re-Indent + Build (Mock)",
+			"shell_cmd": "astyle --style=allman -s2 -S -xw -Q -n \"$file\" && gcc -m32 -L/usr/include -lm --include \"cu_config_example.h\" --include \"cu_mocks.h\" \"cu_mocks.c\" \"cu_ui.c\" \"$file\" -o \"$file_path/$file_base_name\""
 		}
 	]
 }

@@ -193,6 +193,14 @@ int main()
   static int res = 1;
   res = 1;
 
+  #if defined(CU_MOCK_IS_ALIVE)
+  PRINTF("\n***\n* C-Utils mocking enabled\n***\n\n");
+  #endif
+
+  #if defined(CU_MOCK_IS_ALIVE) && defined(CU_MOCK_FGETC_NONBLOCK)
+  set_fgetc_mock_type(CU_MOCK_TYPE_STRING);
+  #endif
+
   char my_str[15];
 
   /* Test for comparing fgets() with uart_fgets() */
