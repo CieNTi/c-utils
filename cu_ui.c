@@ -2,7 +2,7 @@
  * @file Some tools to ease recurrent tasks
  *
  * @author     CieNTi
- * @version    1.3.0
+ * @version    1.3.1
  */
 
 #include "cu_ui.h"
@@ -252,8 +252,9 @@ char *uart_fgets(char *str, int num)
   while ((str[i] = FGETC) != '\n')
   {
     #if defined(M_FGETS_ECHO_ON)
-    /* We don't want carriage return to be printed */
-    if (str[i] == '\r')
+    /* We don't want carriage return to be printed or backspace if no data */
+    if ((str[i] == '\r') ||
+        ((i == 0) && (str[i] == '\b')))
     {
       continue;
     }

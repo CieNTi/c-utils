@@ -5,7 +5,7 @@
  * full access to every symbol described here
  *
  * @author     CieNTi
- * @version    1.0.0
+ * @version    1.0.1
  */
 
 #ifndef H_CU_CONFIG
@@ -14,6 +14,9 @@
 /* ----------------------------------------
  * Commons
  */
+
+/** Function to use as printf(). Default: printf() <cu_commons.h> */
+//#define PRINTF printf
 
 /** Function to use as fgetc(). Default: fgetc() <cu_commons.h> */
 //#define FGETC uart_fgetc()

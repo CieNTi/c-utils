@@ -2,7 +2,7 @@
  * @file C-Utils User Interface
  *
  * @author     CieNTi
- * @version    1.3.0
+ * @version    1.3.1
  */
 
 #ifndef H_CU_UI
