@@ -2,7 +2,7 @@
  * @file Some tools to ease recurrent tasks
  *
  * @author     CieNTi
- * @version    1.3.2
+ * @version    1.3.3
  */
 
 #include "cu_ui.h"
@@ -265,7 +265,14 @@ char *uart_fgets(char *str, int num)
       continue;
     }
 
-    PRINTF("%c", str[i]);
+    if (((str[i] > 0x1F)  && // 0x20 = Space ' '
+         (str[i] < 0x7F)) || // 0x7E = Tilde '~'
+        (str[i] == '\b')  || // Backspace and delete keys are allowed
+        (str[i] == 0x7F))    // once accepted by first filter
+    {
+      PRINTF("%c", str[i]);
+    }
+
     #endif
 
     /* Let's see if user was a good boy */
@@ -286,7 +293,7 @@ char *uart_fgets(char *str, int num)
 
       default:
         /* Printable/typeable characters */
-        if ((str[i] > 0x19) &&  // 0x20 = Space ' '
+        if ((str[i] > 0x1F) &&  // 0x20 = Space ' '
             (str[i] < 0x7F))    // 0x7E = Tilde '~'
         {
           /* As EOF is not an option to end parsing, '\n' is needed. Therefore
