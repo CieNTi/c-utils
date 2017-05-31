@@ -2,7 +2,7 @@
  * @file C-Utils commons
  *
  * @author     CieNTi
- * @version    1.1.0
+ * @version    1.1.1
  */
 
 #ifndef H_CU_COMMONS
@@ -26,8 +26,8 @@
   #define FGETC fgetc(stdin)
 
   /* fgetc() echoes every character, so disable it in cu_ui uart_fgets() */
-  #if !defined(M_FGETS_ECHO_ON)
-    #define M_FGETS_ECHO_ON
+  #if defined(M_FGETS_ECHO_ON)
+    #undef M_FGETS_ECHO_ON
   #endif
 #endif
 
