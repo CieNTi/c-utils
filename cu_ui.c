@@ -2,7 +2,7 @@
  * @file Some tools to ease recurrent tasks
  *
  * @author     CieNTi
- * @version    1.3.1
+ * @version    1.3.2
  */
 
 #include "cu_ui.h"
@@ -249,12 +249,18 @@ char *uart_fgets(char *str, int num)
 {
   int i = 0;
 
-  while ((str[i] = FGETC) != '\n')
+  while (((str[i] = FGETC) != '\n') && (str[i] != '\r'))
   {
+    /* Go out 0x00! */
+    if (str[i] == 0x00)
+    {
+      continue;
+    }
+
     #if defined(M_FGETS_ECHO_ON)
-    /* We don't want carriage return to be printed or backspace if no data */
-    if ((str[i] == '\r') ||
-        ((i == 0) && (str[i] == '\b')))
+    /* We don't want backspace or delete to be printed if there is no data */
+    if (((i == 0) && (str[i] == '\b')) ||
+        ((i == 0) && (str[i] == 0x7F)))
     {
       continue;
     }
@@ -265,7 +271,8 @@ char *uart_fgets(char *str, int num)
     /* Let's see if user was a good boy */
     switch (str[i])
     {
-      /* Backspace key */
+      /* Backspace and Del key (Del can be an escape sequence -> will exit) */
+      case 0x7F:
       case '\b':
         i = (i > 0)?i - 1:0;
         str[i] = 0x00;
@@ -295,10 +302,11 @@ char *uart_fgets(char *str, int num)
   }
 
   #if defined(M_FGETS_ECHO_ON)
-  PRINTF("%c", str[i]);
+  PRINTF("\n");
   #endif
 
-  /* Ensure valid string */
+  /* Ensure valid string with newline (overwriting carriage return, if one) */
+  str[i] = '\n';
   str[++i] = 0x00;
 
   /* All fine */
