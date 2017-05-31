@@ -251,13 +251,13 @@ char *uart_fgets(char *str, int num)
 
   while ((str[i] = FGETC) != '\n')
   {
-    /* We don't want carriage return neither, but is not a reason to leave */
+    #if defined(M_FGETS_ECHO_ON)
+    /* We don't want carriage return to be printed */
     if (str[i] == '\r')
     {
       continue;
     }
 
-    #if defined(M_FGETS_ECHO_ON)
     PRINTF("%c", str[i]);
     #endif
 
@@ -293,12 +293,12 @@ char *uart_fgets(char *str, int num)
     }
   }
 
+  #if defined(M_FGETS_ECHO_ON)
+  PRINTF("%c", str[i]);
+  #endif
+
   /* Ensure valid string */
   str[++i] = 0x00;
-
-  #if defined(M_FGETS_ECHO_ON)
-  PRINTF("%c", str[i - 1]);
-  #endif
 
   /* All fine */
   return str;
