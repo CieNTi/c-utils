@@ -2,13 +2,14 @@
  * @file Some tools to ease recurrent tasks
  *
  * @author     CieNTi
- * @version    1.2.1
+ * @version    1.3.0
  */
 
 #include "cu_ui.h"
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdarg.h>
 
 /* ----------------------------------------
  * Module variables
@@ -243,7 +244,6 @@ int display_hmenu(const struct menu_item_st *menu)
   return res;
 }
 
-
 /**/
 char *uart_fgets(char *str, int num)
 {
@@ -302,4 +302,57 @@ char *uart_fgets(char *str, int num)
 
   /* All fine */
   return str;
+}
+
+
+int display_question(char *question, enum menu_data_type dtype, ...)
+{
+  int res = 1;
+  char tmp_str[Q_ANSWER_SIZE] = { 0x00 };
+  char *dst_string = tmp_str;
+  void *scan_data = NULL;
+  char *scan_fmt = NULL;
+  int max_data = Q_ANSWER_SIZE;
+
+  /* Create and initialize variable argument list */
+  static va_list args;
+  va_start(args, dtype);
+  scan_data = va_arg(args, void *);
+  if (dtype == m_type_string)
+  {
+    /* If expecting a string, use it directly */
+    dst_string = scan_data;
+    max_data = va_arg(args, int);
+  }
+  va_end(args);
+
+  /* Display question and wait the user to type something */
+  PRINTF("\n-- %s: ", question);
+  if (FGETS(dst_string, max_data) == dst_string)
+  {
+    res = 0;
+    switch (dtype)
+    {
+      case m_type_int:
+        scan_fmt = "%i";
+        break;
+      case m_type_float:
+        scan_fmt = "%f";
+        break;
+      case m_type_string:
+        break;
+      default:
+        /* Oops */
+        res = 1;
+        break;
+    }
+
+    /* Last error check */
+    if ((scan_fmt != NULL )&& (sscanf(tmp_str, scan_fmt, scan_data) == 0))
+    {
+      /* No elements, invalid scan */
+      res = 1;
+    }
+  }
+  return res;
 }

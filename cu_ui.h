@@ -2,7 +2,7 @@
  * @file C-Utils User Interface
  *
  * @author     CieNTi
- * @version    1.2.1
+ * @version    1.3.0
  */
 
 #ifndef H_CU_UI
@@ -30,6 +30,11 @@
 #define FGETS(x,y) fgets(x,y,stdin)
 #endif
 
+/** Allocated number of char type inside display_question() */
+#if !defined(Q_ANSWER_SIZE)
+#define Q_ANSWER_SIZE 25
+#endif
+
 /* ----------------------------------------
  * Types, Structs and Enums
  */
@@ -46,6 +51,16 @@ struct menu_item_st
   char key;        /**< Key requested to trigger the menu action */
   char *text;      /**< Text displayed to user */
   menu_action *cb; /**< Action triggered when the user hit the required key */
+};
+
+/**
+ * @brief      Type of data to write or read within the user interface
+ */
+enum menu_data_type
+{
+  m_type_int,
+  m_type_float,
+  m_type_string
 };
 
 /* ----------------------------------------
@@ -113,5 +128,29 @@ int display_hmenu(const struct menu_item_st *menu);
  * @return     This function returns str on success, and NULL on error
  */
 char *uart_fgets(char *str, int num);
+
+/**
+ * @brief      Display a question and wait the user to type an answer
+ *
+ *             When typing, use ESCAPE key to cancel or press ENTER to accept.
+ *             If dtype expects a string, it'll have a trailing newline + NULL
+ *             characters, see { '\n', 0x00 }
+ *             
+ *             Ask for an integer:
+ *             - display_question("Type an integer", m_type_int, &q_int);
+ *             
+ *             Ask for a float:
+ *             - display_question("Type a float", m_type_float, &q_float);
+ *             
+ *             Ask for a string, be careful to set the limit
+ *             - display_question("Type a string", m_type_string, &q_str, 10);
+ *
+ * @param      question   String to display
+ * @param[in]  dtype      Data type to parse
+ * @param[in]  <unnamed>  Variable argument list
+ *
+ * @return     0 ok, otherwise fail
+ */
+int display_question(char *question, enum menu_data_type dtype, ...);
 
 #endif /* H_CU_UI */
