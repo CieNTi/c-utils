@@ -198,12 +198,12 @@ int main()
   #endif
 
   #if defined(CU_MOCK_IS_ALIVE) && defined(CU_MOCK_FGETC_NONBLOCK)
-  set_fgetc_mock_type(CU_MOCK_TYPE_STRING);
+  set_fgetc_mock_type(CU_MOCK_TYPE_FLOAT);
   #endif
 
-  char my_str[15];
 
   /* Test for comparing fgets() with uart_fgets() */
+  char my_str[15];
   PRINTF("Expecting string here: ");
   if (FGETS(my_str, 15) == my_str)
   {
@@ -211,13 +211,31 @@ int main()
     PRINTF("String received: %s\n", my_str);
   }
 
-  /* Getting a float */
+
+  /* Test parsed string against a float */
   float my_float = 0;
   PRINTF("sscanf() exits with 0x%X\n",
          sscanf(my_str, "%f", &my_float));
 
   PRINTF("my_float is %f\n", my_float);
 
+
+  /* Questions example */
+  int q_int = 0;
+  float q_float = 0.0;
+  char q_str[10];
+
+  display_question("Type an integer", m_type_int, &q_int);
+  PRINTF("q_int is: %i\n", q_int);
+
+  display_question("Type a float", m_type_float, &q_float);
+  PRINTF("q_float is: %f\n", q_float);
+
+  display_question("Type a string", m_type_string, &q_str, 10);
+  PRINTF("q_str is: %s\n", q_str);
+
+
+  /* Simple menu example */
   /* Uncomment for infinite loop */
   //res = 0;
   //while (!res)

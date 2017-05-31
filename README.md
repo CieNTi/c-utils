@@ -1,9 +1,43 @@
-# c-utils
+# C-Utils
 
 Some C utilities to ease my daily coding
 
 
 # `cu_ui`: C-Utils User Interface
+
+
+## Display question and wait for typed text
+
+Invoking `display_question(string, data_type, data_holder[, max_length])` will display a text as a question, waiting the user to type text.
+
+Available data types are `m_type_int`, `m_type_float`, `m_type_string` . This last one also need an extra integer argument `max_len`, to limit the data grabbed from the user and avoid overflows, so be sure to set it correctly.
+
+Basic examples are:
+
+```C
+  display_question("Type an integer", m_type_int, &q_int);
+  PRINTF("q_int is: %i\n", q_int);
+
+  display_question("Type a float", m_type_float, &q_float);
+  PRINTF("q_float is: %f\n", q_float);
+
+  /* Limit is set to 10, so max is 8 chars + newline + null */
+  display_question("Type a string", m_type_string, &q_str, 10);
+  PRINTF("q_str is: %s\n", q_str);
+```
+
+The resulting console output looks like:
+
+```
+-- Type an integer: 12345
+q_int es: 12345
+
+-- Type a float: -12.345
+q_float es: -12.345000
+
+-- Type a string: Hello World!
+q_str es: Hello Wo
+```
 
 
 ## Menu with user interaction
@@ -66,23 +100,37 @@ The resulting console output looks like:
 
 ## Changelog
 
+### [1.3.0] - 2017-05-31
+
+#### Added
+
+- `display_question()` to ease display + parse typed text. Overflow safe.
+
+
+### [1.2.1] - 2017-05-31
+
+#### Added
+
+- `uart_fgets()` is a `fgets()`-like function with support for a non-blocking stream (uart) where the returned character can be 0x00.
+
+
 ### [1.1.0] - 2017-05-29
 
-### Added
+#### Added
 
 - Hierarchical menus without deep call made easy with `start_hmenu(menu_action *)` and `display_hmenu(menu_item_st *)`.
 
 
 ### [1.0.0] - 2017-05-28
 
-### Changed
+#### Changed
 
 - `display_menu()` now updates the selected index instead a callback as argument. User can now choose freedomly what to do within a full perspective (switch..case the key, check..call the callback, ...)
 
 
 ### [0.2.0] - 2017-05-28
 
-### Added
+#### Added
 
 - Main and secondary headers support
 
@@ -92,6 +140,9 @@ The resulting console output looks like:
 #### Added
 
 - First release, menu with user interaction
+
+
+# `cu_mocks`: C-Utils mocks for offline testing
 
 
 # TO-DO list
