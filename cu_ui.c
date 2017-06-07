@@ -2,7 +2,7 @@
  * @file Some tools to ease recurrent tasks
  *
  * @author     CieNTi
- * @version    1.3.3
+ * @version    1.3.4
  */
 
 #include "cu_ui.h"
@@ -122,6 +122,9 @@ int display_menu(const struct menu_item_st *menu,
           /* Exit search loop after action is triggered */
           *sel_item = i;
           res = 0;
+          #if defined(M_FGETS_ECHO_ON)
+          PRINTF("%c", menu_choice);
+          #endif
           break;
         }
       }
@@ -146,6 +149,9 @@ int display_menu(const struct menu_item_st *menu,
     /* TODO/IMPROVEMENT: OS wait to avoid high CPU use */
     // OS_wait_function();
   }
+  #if defined(M_FGETS_ECHO_ON)
+  PRINTF("\n");
+  #endif
 
   /* 0 ok, otherwise fails */
   return res;
