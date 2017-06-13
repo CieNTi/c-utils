@@ -349,7 +349,7 @@ int display_question(char *question, enum menu_data_type dtype, ...)
   va_end(args);
 
   /* Display question and wait the user to type something */
-  PRINTF("\n-- %s: ", question);
+  PRINTF("?? %s: ", question);
   if (FGETS(dst_string, max_data) == dst_string)
   {
     res = 0;
